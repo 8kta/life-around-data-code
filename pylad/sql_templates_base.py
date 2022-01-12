@@ -1,4 +1,4 @@
-#===============================================================================
+# ===============================================================================
 # MIT License
 #
 # Copyright (c) 2019-2020 Sergei Izrailev
@@ -20,9 +20,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-#===============================================================================
+# ===============================================================================
 # Source: https://github.com/sizrailev/life-around-data-code/blob/master/pylad/
-#===============================================================================
+# ===============================================================================
 
 '''
 Helper functions for parameterizing SQL queries in Python using JinjaSql
@@ -107,3 +107,26 @@ def get_column_stats_sql(table_name, column_name, default_value):
         'default_value': default_value,
     }
     return apply_sql_template(COLUMN_STATS_TEMPLATE, params)
+
+
+if __name__ == '__main__':
+    user_transaction_template = '''
+    select
+        user_id
+        , count(*) as num_transactions
+        , sum(amount) as total_amount
+    from
+        transactions
+    where
+        user_id = {{ user_id }}
+        and transaction_date = {{ transaction_date }}
+    group by
+        user_id
+    '''
+    params = {
+        'user_id': 1234,
+        'transaction_date': '2019-03-02',
+    }
+
+    print(apply_sql_template(user_transaction_template, params))
+    print(get_column_stats_sql('transactions', 'user_id', None))
